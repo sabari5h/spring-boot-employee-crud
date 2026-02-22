@@ -1,9 +1,10 @@
 package com.example.project_Employees.controller;
 
 import com.example.project_Employees.entity.employees;
-import com.example.project_Employees.repository.employeesDAO;
 import com.example.project_Employees.service.employeeService;
+import com.example.project_Employees.service.employeeServiceImpl;
 import org.springframework.web.bind.annotation.*;
+import tools.jackson.databind.ObjectMapper;
 
 import java.util.List;
 
@@ -11,9 +12,11 @@ import java.util.List;
 @RequestMapping ("/api")
 public class usersController {
     private employeeService empService;
+    private ObjectMapper objectMapper;
 
-    public usersController(employeeService empService) {
+    public usersController(employeeService empService, ObjectMapper objectMapper) {
         this.empService = empService;
+        this.objectMapper = objectMapper;
     }
 
     @GetMapping("/getEmployees")
