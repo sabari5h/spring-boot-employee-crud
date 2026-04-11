@@ -2,53 +2,38 @@ package com.example.project_Employees.service;
 
 import com.example.project_Employees.entity.employees;
 import com.example.project_Employees.exceptionHandler.employeeNotFoundException;
-import com.example.project_Employees.repository.employeesDAO;
+import com.example.project_Employees.repository.employeeRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Service
-public class employeeServiceImpl {
-    private employeesDAO repository;
+public class employeeServiceImpl implements employeeService {
+    private employeeRepository employeeRepo;
 
-    public employeeServiceImpl(employeesDAO repository) {
-        this.repository = repository;
+    public employeeServiceImpl(employeeRepository employeeRepo) {
+        this.employeeRepo = employeeRepo;
     }
 
     public List<employees> employeesList(){
-        return repository.findAll();
+        return employeeRepo.findAll();
     }
 
     public employees findById(int id){
-        employees employee = repository.findById(id);
-        if (employee == null){
-            throw new employeeNotFoundException("employee ID Not found" + id);
-        }
-        return employee;
+        return employeeRepo.findById(id).orElseThrow(() -> new employeeNotFoundException("not found"));
     }
-    @Transactional
-    public String postEmployee(employees employee){
-        repository.addEmployee(employee);
-        return "saved successfully";
+
+    public void postEmployee(employees employee){
+        employeeRepo.save(employee);
     }
-    @Transactional
+
     public String putEmployee(employees employee){
-        int id = employee.getId();
-        employees user = repository.findById(id);
-        if (user == null){
-            throw new employeeNotFoundException("employee Not Found");
-        }
-        repository.updateEmployee(employee);
-        return "updated successfully";
+        employeeRepo.save(employee);
+        return "updated";
     }
-    @Transactional
-    public String removeEmployee(int id){
-        employees user = repository.findById(id);
-        if (user == null){
-            throw new employeeNotFoundException("employee Not Found");
-        }
-        repository.deleteById(id);
-        return "deleted successfully";
+
+    public void removeEmployee(int id){
+        employeeRepo.deleteById(id);
     }
 }
